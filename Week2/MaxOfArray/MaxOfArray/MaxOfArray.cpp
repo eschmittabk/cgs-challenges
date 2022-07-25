@@ -37,7 +37,7 @@ int GetArraySize()
     {
         cout << "How big is your array? Please enter a positive integer: ";
         cin >> size;
-
+       
         if (cin.fail()) 
         {
             cin.clear();
@@ -55,7 +55,6 @@ int GetArraySize()
         else if (size <= 0)
         {
             cin.clear();
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             system("cls");
             cout << "That is not a POSITIVE integer. Please try again!" << endl;
         }

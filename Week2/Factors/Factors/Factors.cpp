@@ -26,10 +26,11 @@ int GetNumber()
         cout << "Please input a positive number: ";
         cin >> number;
 
+        
         if (cin.fail()) 
         {
             cin.clear();
-            cin.ignore(100, '\n');
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             system("cls");
             cout << "Invalid input! Try again!" << endl;
         }
@@ -40,8 +41,9 @@ int GetNumber()
             system("cls");
             cout << "Invalid input! Try again!" << endl;
         }
-        else if (number <= 0) 
+        else if (number <= 0)
         {
+            cin.clear();
             system("cls");
             cout << "Invalid input! Try again!" << endl;
         }

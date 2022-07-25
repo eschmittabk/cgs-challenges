@@ -29,7 +29,7 @@ int GetYear()
         if (cin.fail()) 
         {
             cin.clear();
-            cin.ignore(100, '\n');
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             system("cls");
             cout << "Invalid input! Try again!" << endl;
         }
@@ -40,10 +40,11 @@ int GetYear()
             system("cls");
             cout << "Invalid input! Try again!" << endl;
         }
-        else if (year < 1582) 
+        else if (year < 1582)
         {
+            cin.clear();
             system("cls");
-            cout << year << " is not part of the Gregorian Calendar, so it is not a leap year." << endl;
+            cerr << year << " is not part of the Gregorian Calendar, so it is not a leap year. Try again!" << endl;
         }
         else {
             break;
