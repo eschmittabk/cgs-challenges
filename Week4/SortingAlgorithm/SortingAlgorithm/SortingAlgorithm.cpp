@@ -15,11 +15,18 @@ int GetArraySize();
 uint32_t GetNanos();
 
 void FillArray(int arrayToFill[], int sizeOfArray);
+int PickSort(int arrayToSort[], int sizeOfArray);
+void SortArray(int arrayToSort[], int sizeOfArray, int choice);
+
 void BubbleSort(int arrayToSort[], int sizeOfArray);
+void SelectionSort(int arrayToSort[], int sizeOfArray);
+void InsertionSort(int arrayToSort[], int sizeOfArray);
 
 int ChooseASearchKey(int arrayToPickFrom[], int sizeOfArray);
 void LinearSearch(int arrayToSearch[], int sizeOfArray, int searchKey);
 void BinarySearch(int arrayToSearch[], int low, int high, int searchKey);
+
+void PrintArray(int arrayToSort[], int sizeOfArray);
 
 int main()
 {
@@ -32,6 +39,8 @@ int main()
     srand(time(nullptr));
     FillArray(dataset, arraySize);
 
+    int choice = PickSort(dataset, arraySize);
+
     //Pick a random number (that exists in the array) to search for
     const int searchKey = ChooseASearchKey(dataset, arraySize);
 
@@ -40,21 +49,21 @@ int main()
     LinearSearch(dataset, arraySize, searchKey);
     uint32_t endNanos = GetNanos();
 
-    cout << "Linear Search took: " << (endNanos - startNanos) << " ns \n" << endl;
+    cout << "Linear Search took: " << (endNanos - startNanos) << " ns" << endl << endl;
+
+    PrintArray(dataset, arraySize);
 
     //Sort our dataset
-    startNanos = GetNanos();
-    BubbleSort(dataset, arraySize);
-    endNanos = GetNanos();
+    SortArray(dataset, arraySize, choice);
 
-    cout << "Bubble Sort took: " << (endNanos - startNanos) << " ns \n" << endl;
+    PrintArray(dataset, arraySize);
 
     //Search for search key with binary search
     startNanos = GetNanos();
     BinarySearch(dataset, 0, arraySize, searchKey);
     endNanos = GetNanos();
 
-    cout << "Binary Search took: " << (endNanos - startNanos) << " ns \n" << endl;
+    cout << "Binary Search took: " << (endNanos - startNanos) << " ns" << endl << endl;
 
     delete[] dataset;
     dataset = nullptr;
@@ -66,7 +75,7 @@ int GetArraySize()
 
     do
     {
-        cout << "Please pick an integer size for your array: ";
+        cout << "Please pick a size for your array: ";
         cin >> arraySize;
 
         if (cin.fail())
@@ -114,6 +123,82 @@ void FillArray(int arrayToFill[], int sizeOfArray)
     }
 }
 
+int PickSort(int arrayToSort[], int sizeOfArray)
+{
+    int choice;
+
+    do
+    {
+        cout << "What kind of sort would you like to do?" << endl;
+        cout << "1. Bubble Sort" << endl;
+        cout << "2. Selection Sort" << endl;
+        cout << "3. Insertion Sort" << endl;
+
+        cin >> choice;
+
+        if (cin.fail())
+        {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            system("cls");
+            cout << "Invalid input! Please 1, 2, or 3!" << endl;
+        }
+        else if (cin.get() != '\n')
+        {
+            cin.clear();
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            system("cls");
+            cout << "Invalid input! Please 1, 2, or 3!" << endl;
+        }
+        else if (choice <= 0 || choice > 3)
+        {
+            cin.clear();
+            system("cls");
+            cout << "Invalid input! Please 1, 2, or 3!" << endl;
+        }
+        else
+        {
+            break;
+        }
+
+    } while (true);
+
+    return choice;
+}
+
+void SortArray(int arrayToSort[], int sizeOfArray, int choice)
+{
+    uint32_t startNanos;
+    uint32_t endNanos;
+
+    switch (choice)
+    {
+    case 1:
+        startNanos = GetNanos();
+        BubbleSort(arrayToSort, sizeOfArray);
+        endNanos = GetNanos();
+
+        cout << "Bubble Sort took: " << (endNanos - startNanos) << " ns" << endl << endl;
+        break;
+    case 2:
+        startNanos = GetNanos();
+        SelectionSort(arrayToSort, sizeOfArray);
+        endNanos = GetNanos();
+
+        cout << "Selection Sort took: " << (endNanos - startNanos) << " ns" << endl << endl;
+        break;
+    case 3:
+        startNanos = GetNanos();
+        InsertionSort(arrayToSort, sizeOfArray);
+        endNanos = GetNanos();
+
+        cout << "Insertion Sort took: " << (endNanos - startNanos) << " ns" << endl << endl;
+        break;
+    default:
+        break;
+    }
+}
+
 void BubbleSort(int arrayToSort[], int sizeOfArray)
 {
     long long int comparisons = 0;
@@ -140,7 +225,60 @@ void BubbleSort(int arrayToSort[], int sizeOfArray)
             }
         }
     }
-    cout << "Bubble sort comparisons: " << comparisons << endl;
+    cout << "Bubble Sort comparisons: " << comparisons << endl;
+}
+
+void SelectionSort(int arrayToSort[], int sizeOfArray)
+{
+    long long int comparisons = 0;
+
+    for (int i = 0; i < sizeOfArray - 1; ++i)
+    {
+        int min = arrayToSort[i];
+
+        for (int j = i+1; j < sizeOfArray; ++j)
+        {
+            ++comparisons;
+            
+            if (arrayToSort[j] < min)
+            {
+                int temp;
+
+                temp = arrayToSort[i];
+                arrayToSort[i] = arrayToSort[j];
+                arrayToSort[j] = temp;
+            }
+        }
+    }
+
+    cout << "Selection Sort comparisons: " << comparisons << endl;
+}
+
+void InsertionSort(int arrayToSort[], int sizeOfArray)
+{
+    long long int comparisons = 0;
+
+    for (int i = 1; i < sizeOfArray; ++i)
+    {
+        int temp = arrayToSort[i];
+        int j = i;
+
+        if (arrayToSort[i] >= arrayToSort[j - 1])
+        {
+            ++comparisons;
+        }
+
+        while (j > 0 && arrayToSort[j - 1] > temp)
+        {
+            ++comparisons;
+
+            arrayToSort[j] = arrayToSort[j - 1];
+
+            --j;
+        }
+        arrayToSort[j] = temp;
+    }
+    cout << "Insertion Sort comparisons: " << comparisons << endl;
 }
 
 int ChooseASearchKey(int arrayToPickFrom[], int sizeOfArray)
@@ -204,4 +342,13 @@ void BinarySearch(int arrayToSearch[], int low, int high, int searchKey)
     }
 
     cout << "Search key not found!" << endl;
+}
+
+void PrintArray(int arrayToSort[], int sizeOfArray)
+{
+    for (int i = 0; i < sizeOfArray; ++i)
+    {
+        cout << arrayToSort[i] << " ";
+    }
+    cout << endl << endl;
 }
