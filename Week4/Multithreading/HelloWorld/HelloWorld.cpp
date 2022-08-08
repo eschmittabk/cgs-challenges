@@ -10,7 +10,9 @@ using namespace std;
 
 bool didQuit = false;
 int ThreadVar = 0;
+int ThreadVar2 = 0;
 void HelloWorldThread();
+void HelloWorldThread2();
 
 int main()
 {
@@ -22,6 +24,7 @@ int main()
     char userInput;
 
     std::thread Hello(HelloWorldThread);
+    std::thread Hello2(HelloWorldThread2);
 
     while (!didQuit)
     {
@@ -30,10 +33,12 @@ int main()
         cin >> userInput;
         didQuit = (userInput == 'q') || (userInput == 'Q');
         cout << "ThreadVar: " << ThreadVar << endl;
+        cout << "ThreadVar2: " << ThreadVar2 << endl;
     }
 
 
     Hello.join();
+    Hello2.join();
 
     return 0;
 }
@@ -47,6 +52,19 @@ void HelloWorldThread()
         if (ThreadVar > 1000)
         {
             ThreadVar = 0;
+        }
+    }
+}
+
+void HelloWorldThread2()
+{
+    while (!didQuit)
+    {
+        ThreadVar2++;
+
+        if (ThreadVar2 > 1000)
+        {
+            ThreadVar2 = 0;
         }
     }
 }
