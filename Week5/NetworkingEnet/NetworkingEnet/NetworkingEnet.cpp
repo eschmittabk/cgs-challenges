@@ -173,27 +173,26 @@ void ManageServer(ENetHost* host)
                 << event.peer->address.port << endl;
             /* Store any relevant client information here. */
             event.peer->data = (void*)("Client information");
-            //Sending a packet to an ENet peer
+
             SendPacket(host);
             break;
         case ENET_EVENT_TYPE_RECEIVE:
             cout << "A packet of length " << event.packet->dataLength << endl
-                << "containing " << (char*)event.packet->data
-                << " was received from " << (char*)event.peer->data
-                << " on channel " << event.channelID << endl;
+                << "containing " << (char*)event.packet->data << endl;
+               // << " was received from " << (char*)event.peer->data
+                //<< " on channel " << event.channelID << endl;
+
             /* Clean up the packet now that we're done using it. */
             enet_packet_destroy(event.packet);
 
-            //When we receive a message, we pass that message along to the clients
-            //Call send packet with event.packet->data as the message
-            //or do
-            //enet_host_broadcast(server, 0, event.packet);
+            SendPacket(host);
             break;
 
         case ENET_EVENT_TYPE_DISCONNECT:
             cout << (char*)event.peer->data << " disconnected." << endl;
             /* Reset the peer's client information. */
             event.peer->data = NULL;
+            break;
         }
     }
 }
@@ -213,7 +212,7 @@ void ManageClient(ENetHost* host)
             //Clean up the packet now that we're done using it
             enet_packet_destroy(event.packet);
 
-            SendPacket(client);
+            SendPacket(host);
         }
     }
 }
@@ -223,7 +222,7 @@ void SendPacket(ENetHost* host)
     //Prompt user for message
     cout << "Message: ";
     string message;
-    cin.ignore(); //needed? breaks with multiple clients
+    cin.ignore(); //needed?
     //cout << name << ": ";
     getline(cin, message);
     
@@ -232,8 +231,8 @@ void SendPacket(ENetHost* host)
     if (message.length() != 0)
     {
         /* Create a reliable packet of size 7 containing "packet\0" */
-        ENetPacket* packet = enet_packet_create(&message.front(),
-                             strlen(&message.front()) + 1,
+        ENetPacket* packet = enet_packet_create(message.c_str(),
+                             strlen(message.c_str()) + 1,
                              ENET_PACKET_FLAG_RELIABLE);
         /* Extend the packet so and append the string "foo", so it now */
         /* contains "packetfoo\0"                                      */
