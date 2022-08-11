@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     cout << "Creating Server..." << endl;
     CreateServer(hostName, portNum);
 
-    cout << "Server created. Press esc at anytime to exit the program." << endl << endl; 
+    cout << "Server created." << endl; 
     //we want this in a thread
     std::thread ServerThread(ManageServerThread, std::ref(server));
 
