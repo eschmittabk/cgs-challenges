@@ -106,15 +106,16 @@ void ManageServer(ENetHost* host)
 
             //When we receive a message, we pass that message along to the clients
             //SendPacket(host, event.peer, (char*)event.packet->data);
-
-            for (int i = 0; i < (int)host->peerCount; ++i)
-            {
-                if ((&(host->peers[i]) != event.peer) && (&(host->peers[i]) != nullptr))
+            if (numClients > 1) {
+                for (int i = 0; i < (int)host->peerCount; ++i)
                 {
-                    SendPacket(host, &(host->peers[i]), (char*)event.packet->data);
+                    if ((&(host->peers[i]) != event.peer) && (&(host->peers[i]) != nullptr))
+                    {
+                        SendPacket(host, &(host->peers[i]), (char*)event.packet->data);
+                    }
                 }
             }
-
+            
             /* Clean up the packet now that we're done using it. */
             enet_packet_destroy(event.packet);
             break;
